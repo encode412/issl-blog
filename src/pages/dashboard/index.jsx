@@ -16,6 +16,7 @@ const DashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([]);
   const [blogUpdate, setBlogUpdate] = useState(false);
   const [updateForm, setUpdateForm] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleAddNewBlog = () => {
     setShowBlogForm(true);
@@ -26,6 +27,7 @@ const DashboardPage = () => {
   }, []);
 
   const getBlogPosts = async () => {
+    setLoading(true);
     try {
       const querySnapshot = await getDocs(collection(db, "posts"));
       console.log(querySnapshot);
@@ -36,10 +38,11 @@ const DashboardPage = () => {
         image: null,
       }));
 
-      console.log(blogPosts);
+      setLoading(false);
       setBlogPosts(blogPosts);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -65,7 +68,7 @@ const DashboardPage = () => {
     <Layout>
       {showBlogForm && (
         <BgOverlay isModalOpen={showBlogForm}>
-          <div className="animate-slide_up absolute left-[30%] top-24 w-1/2">
+          <div className="absolute left-[30%] top-24 w-1/2 animate-slide_up">
             <BlogForm
               handleCancelClick={() => setShowBlogForm(false)}
               blogUpdate={blogUpdate}
@@ -86,6 +89,9 @@ const DashboardPage = () => {
             updateBlog={handleUpdateBlog}
           />
         ))}
+        {loading && (
+          <div className="text-center text-xl font-medium">Loading...</div>
+        )}
       </div>
     </Layout>
   );

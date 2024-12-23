@@ -3,9 +3,11 @@ import { Button } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/";
+import { Spinner } from "../../constants/images";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({
     email: "",
     password: "",
@@ -49,7 +51,7 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validate();
-
+    setLoading(true);
     if (!error) {
       try {
         const response = await createUserWithEmailAndPassword(
@@ -57,9 +59,10 @@ const SignupPage = () => {
           details.email,
           details.password,
         );
-
+        setLoading(false)
         navigate("/admin/dashboard");
       } catch (error) {
+        setLoading(false)
         console.log(error);
         const errorCode = error.code;
         setErrorState({ ...errorState, servererror: errorCode });
@@ -121,11 +124,17 @@ const SignupPage = () => {
             {errorState.servererror}
           </span>
         )}
-        <Button onClick={handleSubmit}>Sign up</Button>
+        <Button className="flex justify-center" onClick={handleSubmit}>
+          {loading ? (
+            <img src={Spinner} className="h-[25px] w-[25px]" />
+          ) : (
+            "Sign up"
+          )}
+        </Button>
 
         <span className="text-center text-sm font-normal text-secondary">
           Already have an admin account?.{" "}
-          <Link to="/login" className="text-base font-medium">
+          <Link to="/admin/login" className="text-base font-medium">
             Login as an admin
           </Link>
         </span>

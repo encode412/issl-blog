@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "../../../../components";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import { Spinner } from "../../../../constants/images";
 
 const BlogForm = ({
   handleCancelClick,
@@ -12,14 +13,14 @@ const BlogForm = ({
   getBlogPosts,
 }) => {
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [details, setDetails] = useState({
     title: blogUpdate ? updateForm.title : "",
     content: blogUpdate ? updateForm.content : "",
     image: image,
   });
-  
+
   const [errorState, setErrorState] = useState({
     titleError: "",
     contentError: "",
@@ -70,7 +71,7 @@ const BlogForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validate();
-setLoading(true)
+    setLoading(true);
     if (!error) {
       try {
         const response = await addDoc(collection(db, "posts"), details);
@@ -107,7 +108,8 @@ setLoading(true)
           />
         </div>
         <p className="text-xl font-medium">
-          Fill the details below to {blogUpdate ? 'update' : 'create'} a new blog
+          Fill the details below to {blogUpdate ? "update" : "create"} a new
+          blog
         </p>
         <form className="mt-3 flex flex-col gap-y-3">
           <div className="flex w-full flex-col gap-y-1">
@@ -147,7 +149,7 @@ setLoading(true)
 
           <div className="flex w-full items-center justify-center rounded-[6px] border border-[#d5d5d5] px-4 py-10">
             <label htmlFor="file">
-              <div className="border-lightgray cursor-pointer border px-3 py-1 text-sm transition-all ease-in hover:scale-95">
+              <div className="cursor-pointer border border-lightgray px-3 py-1 text-sm transition-all ease-in hover:scale-95">
                 Add image
               </div>
               <input
@@ -168,14 +170,24 @@ setLoading(true)
               />
             )}
           </div>
-          <div className="mt-4 w-full">
-            <Button
-              onClick={blogUpdate ? handleUpdate : handleSubmit}
-              className="w-full"
-            >
-              {blogUpdate ? "Update" : "Submit"}
-            </Button>
-          </div>
+          {loading ? (
+            <div className="mt-4 w-full">
+              <Button
+                className="w-full"
+              >
+                <img src={Spinner} alt="loading" />
+              </Button>
+            </div>
+          ) : (
+            <div className="mt-4 w-full">
+              <Button
+                onClick={blogUpdate ? handleUpdate : handleSubmit}
+                className="w-full"
+              >
+                {blogUpdate ? "Update" : "Submit"}
+              </Button>
+            </div>
+          )}
         </form>
       </div>
     </div>
