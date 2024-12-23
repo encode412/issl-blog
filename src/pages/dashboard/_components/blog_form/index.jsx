@@ -76,9 +76,7 @@ const BlogForm = ({
       try {
         const response = await addDoc(collection(db, "posts"), details);
 
-        console.log(response);
       } catch (error) {
-        console.log(error);
         const errorCode = error.code;
         setErrorState({ ...errorState, servererror: errorCode });
       }
@@ -92,7 +90,6 @@ const BlogForm = ({
       await updateDoc(docRef, details);
       setShowBlogForm(false);
       getBlogPosts();
-      console.log("Updated Successfully");
     } catch (error) {
       console.log(error);
     }
@@ -173,9 +170,9 @@ const BlogForm = ({
           {loading ? (
             <div className="mt-4 w-full">
               <Button
-                className="w-full"
+                className="w-full flex justify-center"
               >
-                <img src={Spinner} alt="loading" />
+                <img src={Spinner} className="w-[25px] h-[25px]" alt="loading" />
               </Button>
             </div>
           ) : (

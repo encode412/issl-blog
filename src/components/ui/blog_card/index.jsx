@@ -2,7 +2,6 @@ import { Delete01Icon, Edit01Icon } from "hugeicons-react";
 import React from "react";
 
 const BlogCard = ({ post, deleteBlog, updateBlog }) => {
-  console.log(post)
   const handleDeleteBlog = () => {
     deleteBlog(post);
   };

@@ -30,7 +30,6 @@ const DashboardPage = () => {
     setLoading(true);
     try {
       const querySnapshot = await getDocs(collection(db, "posts"));
-      console.log(querySnapshot);
       const blogPosts = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         content: doc.data().content,
@@ -47,12 +46,10 @@ const DashboardPage = () => {
   };
 
   const handleDeleteBlog = async (post) => {
-    console.log(post);
     try {
       const docRef = doc(db, "posts", post.id);
       await deleteDoc(docRef);
       getBlogPosts();
-      console.log("Deleted Successfully");
     } catch (error) {
       console.log(error);
     }

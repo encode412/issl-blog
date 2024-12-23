@@ -63,7 +63,6 @@ const SignupPage = () => {
         navigate("/admin/dashboard");
       } catch (error) {
         setLoading(false)
-        console.log(error);
         const errorCode = error.code;
         setErrorState({ ...errorState, servererror: errorCode });
       }
