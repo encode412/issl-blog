@@ -30,12 +30,7 @@ const sideLinks = [
 
     link: "home",
   },
-  {
-    id: 14,
-    icon: <Profile02Icon size={20} color="#FFFFFF" />,
-    label: "Agent Skill",
-    link: "home",
-  },
+ 
 ];
 const Sidebar = () => {
   const navigate = useNavigate();
