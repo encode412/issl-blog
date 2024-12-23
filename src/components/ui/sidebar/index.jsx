@@ -30,7 +30,6 @@ const sideLinks = [
 
     link: "home",
   },
- 
 ];
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -54,20 +53,16 @@ const Sidebar = () => {
 
       <div className="mr-3 flex flex-col gap-y-8 px-2">
         {sideLinks.map((link) => (
-          <Link
-            to={`/admin/${link.link}`}
-            className={`mx-auto flex w-full items-center gap-x-3 rounded-[5px] px-3 py-4 transition-all ease-in hover:cursor-pointer hover:bg-primary hover:bg-opacity-20 ${link.id === activeId && "bg-primary bg-opacity-20"}`}
+          <span
+            // to={`/`}
+            className={`mx-auto flex w-full items-center gap-x-3 rounded-[5px] px-3 py-4 transition-all ease-in hover:cursor-pointer hover:bg-primary hover:bg-opacity-20 ${link.label === 'Home' && "bg-primary bg-opacity-20"}`}
             key={link.id}
-            onClick={() => {
-              setActiveId(link.id);
-              handleReset();
-            }}
           >
             {link.icon}
             <span className="text-base font-medium text-primary">
               {link.label}
             </span>
-          </Link>
+          </span>
         ))}
         <div
           className={`mx-auto mt-20 flex w-full items-center gap-x-3 rounded-[5px] px-3 py-4 transition-all ease-in hover:cursor-pointer hover:bg-primary hover:bg-opacity-20`}

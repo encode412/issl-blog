@@ -18,13 +18,13 @@ const BlogForm = ({
   const [details, setDetails] = useState({
     title: blogUpdate ? updateForm.title : "",
     content: blogUpdate ? updateForm.content : "",
-    image: image,
+    // image: image,
   });
 
   const [errorState, setErrorState] = useState({
     titleError: "",
     contentError: "",
-    imageError: "",
+    // imageError: "",
   });
 
   const validate = () => {
@@ -32,7 +32,7 @@ const BlogForm = ({
     const errors = {
       titleError: "",
       contentError: "",
-      imageError: "",
+      // imageError: "",
     };
 
     if (!details.title) {
@@ -75,7 +75,9 @@ const BlogForm = ({
     if (!error) {
       try {
         const response = await addDoc(collection(db, "posts"), details);
-
+        setLoading(false);
+        setShowBlogForm(false);
+        getBlogPosts();
       } catch (error) {
         const errorCode = error.code;
         setErrorState({ ...errorState, servererror: errorCode });
@@ -144,7 +146,7 @@ const BlogForm = ({
             </span>
           </div>
 
-          <div className="flex w-full items-center justify-center rounded-[6px] border border-[#d5d5d5] px-4 py-10">
+          {/* <div className="flex w-full items-center justify-center rounded-[6px] border border-[#d5d5d5] px-4 py-10">
             <label htmlFor="file">
               <div className="cursor-pointer border border-lightgray px-3 py-1 text-sm transition-all ease-in hover:scale-95">
                 Add image
@@ -157,7 +159,7 @@ const BlogForm = ({
                 onChange={handleImageUpload}
               />
             </label>
-          </div>
+          </div> */}
           <div>
             {imagePreview && (
               <img
@@ -169,10 +171,12 @@ const BlogForm = ({
           </div>
           {loading ? (
             <div className="mt-4 w-full">
-              <Button
-                className="w-full flex justify-center"
-              >
-                <img src={Spinner} className="w-[25px] h-[25px]" alt="loading" />
+              <Button className="flex w-full justify-center">
+                <img
+                  src={Spinner}
+                  className="h-[25px] w-[25px]"
+                  alt="loading"
+                />
               </Button>
             </div>
           ) : (
