@@ -1,5 +1,5 @@
 import { Notification01Icon, Search01Icon } from "hugeicons-react";
-import React, { useState } from "react";
+import React from "react";
 import { demoProfile } from "../../../constants/images";
 
 const Navbar = ({ user }) => {

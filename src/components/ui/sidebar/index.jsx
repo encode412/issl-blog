@@ -5,8 +5,8 @@ import {
   Logout01Icon,
   PinIcon,
 } from "hugeicons-react";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase";
 
 const sideLinks = [
