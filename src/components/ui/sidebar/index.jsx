@@ -4,7 +4,6 @@ import {
   Home11Icon,
   Logout01Icon,
   PinIcon,
-  Profile02Icon,
 } from "hugeicons-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -27,13 +26,11 @@ const sideLinks = [
     id: 3,
     icon: <PinIcon size={20} color="#FFFFFF" />,
     label: "Pinned",
-
     link: "home",
   },
 ];
 const Sidebar = () => {
   const navigate = useNavigate();
-  const [activeId, setActiveId] = useState();
 
   const handleLogout = async () => {
     try {
@@ -68,7 +65,6 @@ const Sidebar = () => {
           className={`mx-auto mt-20 flex w-full items-center gap-x-3 rounded-[5px] px-3 py-4 transition-all ease-in hover:cursor-pointer hover:bg-primary hover:bg-opacity-20`}
           onClick={handleLogout}
         >
-          {/* <img src={logoutIcon} alt="" className="w-[25px]" /> */}
           <Logout01Icon size={22} color="#FFFFFF" />
           <span className="text-base font-medium text-primary">Log out</span>
         </div>

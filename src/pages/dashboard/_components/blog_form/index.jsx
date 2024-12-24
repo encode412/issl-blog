@@ -67,7 +67,6 @@ const BlogForm = ({
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        // setImage(file);
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);

@@ -48,20 +48,27 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validate();
-    setLoading(true);
     if (!error) {
+      setLoading(true);
+
       try {
         const response = await signInWithEmailAndPassword(
           auth,
           details.email,
           details.password,
         );
-        setLoading(false)
+        localStorage.setItem("user", JSON.stringify(response.user));
+        setLoading(false);
         navigate("/admin/dashboard");
       } catch (error) {
-        setLoading(false)
+        setLoading(false);
         const errorCode = error.code;
-        setErrorState({ ...errorState, servererror: errorCode });
+        setErrorState({
+          ...errorState,
+          servererror: errorCode,
+          emailError: "",
+          passwordError: "",
+        });
       }
     }
   };
@@ -85,7 +92,7 @@ const LoginPage = () => {
             placeholder="Enter your email"
             className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
           />
-          <span className="text-xs text-[#e62e2e]">
+          <span className="text-sm text-[#e62e2e]">
             {errorState.emailError}
           </span>
         </div>
@@ -101,7 +108,7 @@ const LoginPage = () => {
             placeholder="Enter your Password"
             className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
           />
-          <span className="text-xs text-[#e62e2e]">
+          <span className="text-sm text-[#e62e2e]">
             {errorState.passwordError}
           </span>
         </div>
@@ -110,8 +117,12 @@ const LoginPage = () => {
             {errorState.servererror}
           </span>
         )}
-        <Button onClick={handleSubmit} className='flex justify-center'>
-          {loading ? <img src={Spinner} className="w-[25px] h-[25px]" /> : "Login"}
+        <Button onClick={handleSubmit} className="flex justify-center">
+          {loading ? (
+            <img src={Spinner} className="h-[25px] w-[25px]" />
+          ) : (
+            "Login"
+          )}
         </Button>
 
         <span className="text-center text-sm font-normal text-secondary">

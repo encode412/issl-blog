@@ -11,13 +11,15 @@ const SignupPage = () => {
   const [details, setDetails] = useState({
     email: "",
     password: "",
+    position: "",
   });
   const [errorState, setErrorState] = useState({
     emailError: "",
     passwordError: "",
     servererror: "",
+    positionError: "",
   });
-
+  console.log(errorState);
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   const validate = () => {
@@ -25,6 +27,7 @@ const SignupPage = () => {
     const errors = {
       emailError: "",
       passwordError: "",
+      positionError: "",
     };
 
     if (!details.email) {
@@ -39,6 +42,10 @@ const SignupPage = () => {
       isError = true;
       errors.passwordError = "Please enter your password";
     }
+    if (!details.position) {
+      isError = true;
+      errors.positionError = "Please enter your designated position";
+    }
 
     setErrorState({ ...errorState, ...errors });
     return isError;
@@ -51,20 +58,26 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validate();
-    setLoading(true);
     if (!error) {
+      setLoading(true);
       try {
         const response = await createUserWithEmailAndPassword(
           auth,
           details.email,
           details.password,
         );
-        setLoading(false)
+        setLoading(false);
         navigate("/admin/dashboard");
       } catch (error) {
-        setLoading(false)
+        setLoading(false);
         const errorCode = error.code;
-        setErrorState({ ...errorState, servererror: errorCode });
+        setErrorState({
+          ...errorState,
+          servererror: errorCode,
+          positionError: "",
+          emailError: "",
+          passwordError: "",
+        });
       }
     }
   };
@@ -86,7 +99,7 @@ const SignupPage = () => {
             placeholder="Enter your email"
             className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
           />
-          <span className="text-xs text-[#e62e2e]">
+          <span className="text-sm text-[#e62e2e]">
             {errorState.emailError}
           </span>
         </div>
@@ -102,21 +115,27 @@ const SignupPage = () => {
             placeholder="Enter your password"
             className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
           />
-          <span className="text-xs text-[#e62e2e]">
+          <span className="text-sm text-[#e62e2e]">
             {errorState.passwordError}
           </span>
         </div>
         <div className="flex w-full flex-col gap-y-2">
-          <label htmlFor="email" className="text-xl font-medium">
+          <label htmlFor="position" className="text-xl font-medium">
             Position
           </label>
           <input
-            // type="email"
-            // name="email"
-            // id="email"
+            type="text"
+            name="position"
+            id="position"
+            onChange={handleForm}
             placeholder="Enter your position e.g admin, sales ..."
             className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
           />
+          {errorState.positionError && (
+            <span className="text-sm text-[#e62e2e]">
+              {errorState.positionError}
+            </span>
+          )}
         </div>
         {errorState.servererror && (
           <span className="text-sm text-[#e62e2e]">
