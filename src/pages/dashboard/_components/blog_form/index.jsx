@@ -12,6 +12,7 @@ const BlogForm = ({
   updateForm,
   setShowBlogForm,
   getBlogPosts,
+  setBlogUpdate,
 }) => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ const BlogForm = ({
     contentError: "",
     imageError: "",
   });
-  
+
   const validate = () => {
     let isError = false;
     const errors = {
@@ -151,6 +152,7 @@ const BlogForm = ({
             setLoading(false);
             setShowBlogForm(false);
             getBlogPosts();
+            setBlogUpdate(false);
           },
         );
       } else {
@@ -159,10 +161,12 @@ const BlogForm = ({
         setShowBlogForm(false);
         setLoading(false);
         getBlogPosts();
+        setBlogUpdate(false);
       }
     } catch (error) {
       console.log(error);
       setLoading(false);
+      setBlogUpdate(false);
     }
   };
   return (
@@ -232,14 +236,14 @@ const BlogForm = ({
             {errorState.imageError}
           </span>
           <div>
-            {(imagePreview) && (
+            {imagePreview && (
               <img
                 src={imagePreview}
                 alt="image"
                 className="h-[100px] w-[100px]"
               />
             )}
-            {(updateForm && !imagePreview) && (
+            {updateForm && !imagePreview && (
               <img
                 src={details.image}
                 alt="image"

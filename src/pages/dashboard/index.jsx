@@ -69,6 +69,7 @@ const DashboardPage = () => {
               updateForm={updateForm}
               setShowBlogForm={setShowBlogForm}
               getBlogPosts={getBlogPosts}
+              setBlogUpdate={setBlogUpdate}
             />
           </div>
         </BgOverlay>
