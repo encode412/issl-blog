@@ -9,7 +9,7 @@ const BlogCard = ({ post, deleteBlog, updateBlog }) => {
     updateBlog(post);
   };
   return (
-    <div className="mt-10 w-[20%] bg-primary drop-shadow-md">
+    <div className="mt-10 w-[20%] rounded-[8px] bg-primary drop-shadow-lg">
       <div className="flex flex-col px-5 py-3">
         <div className="flex justify-end gap-x-3">
           <Edit01Icon
@@ -25,9 +25,9 @@ const BlogCard = ({ post, deleteBlog, updateBlog }) => {
             className="cursor-pointer transition-all ease-out hover:scale-95"
           />
         </div>
-        <div className="text-lg font-medium">{post.title}</div>
-        <img src={post?.image} alt="" className="w-[200px] h-[200px]" />
-        <div className="text-[#2f2f2f]">{post.content}</div>
+        <div className="my-2 text-lg font-medium">{post.title}</div>
+        <img src={post?.image} alt="" className="h-[200px] w-[200px]" />
+        <div className="my-2 mt-3 text-[#2f2f2f]">{post.content}</div>
       </div>
     </div>
   );
