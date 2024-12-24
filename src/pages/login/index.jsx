@@ -59,7 +59,6 @@ const LoginPage = () => {
         setLoading(false)
         navigate("/admin/dashboard");
       } catch (error) {
-        console.log(error);
         setLoading(false)
         const errorCode = error.code;
         setErrorState({ ...errorState, servererror: errorCode });

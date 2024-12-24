@@ -27,8 +27,7 @@ const BlogForm = ({
     contentError: "",
     imageError: "",
   });
-  console.log(errorState);
-  console.log(details);
+  
   const validate = () => {
     let isError = false;
     const errors = {
@@ -93,7 +92,6 @@ const BlogForm = ({
             (snapshot) => {
               const progress =
                 (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log(`Upload is ${progress}% done`);
             },
             (error) => {
               console.log(error);
@@ -111,7 +109,6 @@ const BlogForm = ({
           );
         } catch (error) {
           setLoading(false);
-          console.log(error);
           const errorCode = error.code;
           setErrorState({ ...errorState, servererror: errorCode });
         }
@@ -123,7 +120,6 @@ const BlogForm = ({
           getBlogPosts();
         } catch (error) {
           setLoading(false);
-          console.log(error);
           const errorCode = error.code;
           setErrorState({ ...errorState, servererror: errorCode });
         }
@@ -144,7 +140,6 @@ const BlogForm = ({
           (snapshot) => {
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Upload is ${progress}% done`);
           },
           (error) => {
             console.log(error);

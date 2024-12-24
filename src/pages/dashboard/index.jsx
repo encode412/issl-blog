@@ -74,7 +74,7 @@ const DashboardPage = () => {
         </BgOverlay>
       )}
       {loading && (
-        <div className="text-center text-xl font-medium">Loading...</div>
+        <div className="text-center absolute left-[10%] right-0 text-xl font-medium">Loading...</div>
       )}
       <DashboardNav handleNewClick={handleAddNewBlog} />
       <div className="flex flex-row gap-x-10 px-6">
@@ -86,6 +86,9 @@ const DashboardPage = () => {
             updateBlog={handleUpdateBlog}
           />
         ))}
+      </div>
+      <div className=" flex justify-center items-center text-xl">
+        {blogPosts.length === 0 && <div>No posts available</div>}
       </div>
     </Layout>
   );
