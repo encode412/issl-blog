@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BgOverlay, BlogCard, Layout } from "../../components";
 import DashboardNav from "./_components/navbar";
 import BlogForm from "./_components/blog_form";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 
 const DashboardPage = () => {
@@ -34,7 +28,7 @@ const DashboardPage = () => {
         id: doc.id,
         content: doc.data().content,
         title: doc.data().title,
-        image: null,
+        image: doc.data().image,
       }));
 
       setLoading(false);
@@ -67,7 +61,10 @@ const DashboardPage = () => {
         <BgOverlay isModalOpen={showBlogForm}>
           <div className="absolute left-[30%] top-24 w-1/2 animate-slide_up">
             <BlogForm
-              handleCancelClick={() => setShowBlogForm(false)}
+              handleCancelClick={() => {
+                setShowBlogForm(false);
+                setBlogUpdate(false);
+              }}
               blogUpdate={blogUpdate}
               updateForm={updateForm}
               setShowBlogForm={setShowBlogForm}
@@ -75,6 +72,9 @@ const DashboardPage = () => {
             />
           </div>
         </BgOverlay>
+      )}
+      {loading && (
+        <div className="text-center text-xl font-medium">Loading...</div>
       )}
       <DashboardNav handleNewClick={handleAddNewBlog} />
       <div className="flex flex-row gap-x-10 px-6">
@@ -86,9 +86,6 @@ const DashboardPage = () => {
             updateBlog={handleUpdateBlog}
           />
         ))}
-        {loading && (
-          <div className="text-center text-xl font-medium">Loading...</div>
-        )}
       </div>
     </Layout>
   );

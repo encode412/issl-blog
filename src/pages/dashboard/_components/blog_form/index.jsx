@@ -2,7 +2,8 @@ import { Cancel01Icon } from "hugeicons-react";
 import React, { useState } from "react";
 import { Button } from "../../../../components";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../../firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { db, storage } from "../../../../firebase";
 import { Spinner } from "../../../../constants/images";
 
 const BlogForm = ({
@@ -18,21 +19,22 @@ const BlogForm = ({
   const [details, setDetails] = useState({
     title: blogUpdate ? updateForm.title : "",
     content: blogUpdate ? updateForm.content : "",
-    // image: image,
+    image: blogUpdate ? updateForm.image : null,
   });
 
   const [errorState, setErrorState] = useState({
     titleError: "",
     contentError: "",
-    // imageError: "",
+    imageError: "",
   });
-
+  console.log(errorState);
+  console.log(details);
   const validate = () => {
     let isError = false;
     const errors = {
       titleError: "",
       contentError: "",
-      // imageError: "",
+      imageError: "",
     };
 
     if (!details.title) {
@@ -42,6 +44,10 @@ const BlogForm = ({
     if (!details.content) {
       isError = true;
       errors.contentError = "Please enter your blog content";
+    }
+    if (!details.image) {
+      isError = true;
+      errors.imageError = "Please select an image";
     }
 
     setErrorState({ ...errorState, ...errors });
@@ -56,47 +62,114 @@ const BlogForm = ({
     const file = e.target.files[0];
 
     if (file.type.startsWith("image/")) {
+      setImage(file);
+      setDetails({ ...details, image: file });
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        setImage(file);
+        // setImage(file);
         setImagePreview(reader.result);
-        // setDetails({ ...details, file: file });
       };
       reader.readAsDataURL(file);
     } else {
       alert("select again");
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validate();
-    setLoading(true);
+
     if (!error) {
-      try {
-        const response = await addDoc(collection(db, "posts"), details);
-        setLoading(false);
-        setShowBlogForm(false);
-        getBlogPosts();
-      } catch (error) {
-        const errorCode = error.code;
-        setErrorState({ ...errorState, servererror: errorCode });
+      setLoading(true);
+
+      if (image) {
+        try {
+          const storageRef = ref(storage, `images/${image.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, image);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% done`);
+            },
+            (error) => {
+              console.log(error);
+            },
+            async () => {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              const response = await addDoc(collection(db, "posts"), {
+                ...details,
+                image: downloadURL,
+              });
+              setLoading(false);
+              setShowBlogForm(false);
+              getBlogPosts();
+            },
+          );
+        } catch (error) {
+          setLoading(false);
+          console.log(error);
+          const errorCode = error.code;
+          setErrorState({ ...errorState, servererror: errorCode });
+        }
+      } else {
+        try {
+          const response = await addDoc(collection(db, "posts"), details);
+          setLoading(false);
+          setShowBlogForm(false);
+          getBlogPosts();
+        } catch (error) {
+          setLoading(false);
+          console.log(error);
+          const errorCode = error.code;
+          setErrorState({ ...errorState, servererror: errorCode });
+        }
       }
     }
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const docRef = doc(db, "posts", updateForm.id);
-      await updateDoc(docRef, details);
-      setShowBlogForm(false);
-      getBlogPosts();
+      if (image) {
+        const storageRef = ref(storage, `images/${image.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (error) => {
+            console.log(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            const docRef = doc(db, "posts", updateForm.id);
+            await updateDoc(docRef, { ...details, image: downloadURL });
+            setLoading(false);
+            setShowBlogForm(false);
+            getBlogPosts();
+          },
+        );
+      } else {
+        const docRef = doc(db, "posts", updateForm.id);
+        await updateDoc(docRef, details);
+        setShowBlogForm(false);
+        setLoading(false);
+        getBlogPosts();
+      }
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
-
   return (
     <div className="w-full rounded-[10px] border border-[#d5d5d5] bg-primary">
       <div className="flex flex-col gap-y-3 px-10 py-5">
@@ -124,7 +197,7 @@ const BlogForm = ({
               placeholder="Enter your blog title"
               className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
             />
-            <span className="text-xs text-[#e62e2e]">
+            <span className="text-sm text-[#e62e2e]">
               {errorState.titleError}
             </span>
           </div>
@@ -141,12 +214,12 @@ const BlogForm = ({
               placeholder="Enter your blog content"
               className="w-full rounded-[6px] border border-[#d5d5d5] px-4 py-3 focus:outline-none"
             />
-            <span className="text-xs text-[#e62e2e]">
-              {errorState.titleError}
+            <span className="text-sm text-[#e62e2e]">
+              {errorState.contentError}
             </span>
           </div>
 
-          {/* <div className="flex w-full items-center justify-center rounded-[6px] border border-[#d5d5d5] px-4 py-10">
+          <div className="flex w-full items-center justify-center rounded-[6px] border border-[#d5d5d5] px-4 py-10">
             <label htmlFor="file">
               <div className="cursor-pointer border border-lightgray px-3 py-1 text-sm transition-all ease-in hover:scale-95">
                 Add image
@@ -159,11 +232,21 @@ const BlogForm = ({
                 onChange={handleImageUpload}
               />
             </label>
-          </div> */}
+          </div>
+          <span className="text-sm text-[#e62e2e]">
+            {errorState.imageError}
+          </span>
           <div>
-            {imagePreview && (
+            {(imagePreview) && (
               <img
                 src={imagePreview}
+                alt="image"
+                className="h-[100px] w-[100px]"
+              />
+            )}
+            {(updateForm && !imagePreview) && (
+              <img
+                src={details.image}
                 alt="image"
                 className="h-[100px] w-[100px]"
               />
